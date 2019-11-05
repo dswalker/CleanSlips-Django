@@ -59,7 +59,7 @@ def upload(request, campus, template):
 
             # check header
             rows = filehandle.get_array()
-            if rows[0] != ['Title', 'Author', 'Publisher', 'Publication date', 'Barcode', 'ISBN/ISSN', 'Availability', 'Volume/Issue', 'Shipping note', 'Requester email', 'Pickup at', 'Electronic available', 'Digital available', 'External request ID', 'Partner name', 'Partner code', 'Copyright Status', 'Level of Service']:
+            if rows[0] != ['Title', 'Author', 'Publisher', 'Publication date', 'Barcode', 'ISBN/ISSN', 'Availability', 'Volume/Issue', 'Shipping note', 'Requester email', 'Pickup at', 'Electronic available', 'Digital available', 'External request ID', 'Partner name', 'Partner code', 'Copyright Status', 'Level of Service', 'Requested Barcode']:
                 return render(request, 'errors.html', {'title' : 'CleanSlips | Ooops',
                                                        'campus': campus.upper(),
                                                        'template': template,
@@ -101,7 +101,7 @@ def upload(request, campus, template):
                     print(f"SHIPPING NOTE FIELD - {shipping_note} - IS NOT AS EXPECTED...ATTEMPTING TO COMPENSATE...")
                     comments = ""
                     requestor_name = shipping_note
-                    
+
                 # __________ PARSE AVAILABILITY _______________________________
                 availability_array = availability_string.split('||')
 
@@ -121,7 +121,7 @@ def upload(request, campus, template):
                     q = re.findall(regex, availability)
                     try:
                         matches = list(q[0])
-                        
+
                         library = matches[0]
                         location = matches[1]
                         call_number = matches[2]
@@ -144,10 +144,10 @@ def upload(request, campus, template):
                     except:
                         print(f"CALL NUMBER - {call_number} - IS NOT VALID LC. ATTEMPTING TO COMPENSATE...")
                         normalized_call_number = None
-                    
+
                     if normalized_call_number == None:
                         normalized_call_number = call_number
-                    
+
                     # generate sort string
                     sort_string = f"{location}|{normalized_call_number}"
                     full_sort_string_array.append(sort_string)
@@ -179,7 +179,7 @@ def upload(request, campus, template):
             requests_sorted = sorted(ill_requests, key=itemgetter('Sort'))
 
             # _________ GENERATE LABELS _______________________________________
-            
+
             # stickers
             if template == "stickers":
                 template = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join('static','slip_templates','campus',campus.upper(),'TEMPLATE_stickers.docx'))
@@ -203,7 +203,7 @@ def upload(request, campus, template):
             )
             response['Content-Disposition'] = 'attachment; filename=SLIPS.docx'
             response['Content-Length'] = length
-            
+
             return response
 
 
